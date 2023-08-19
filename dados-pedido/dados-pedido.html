@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Bazar Heriberto Muller</title>
+  <!-- Bootstrap -->
+  <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://getbootstrap.com/docs/4.0/examples/navbar-fixed/navbar-top-fixed.css" rel="stylesheet">
+  <!-- css -->
+  <link rel="stylesheet" href="dados-pedido.css">
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+
+    <a class="navbar-brand" href="#">Bazar Receita</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+      aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+        <button type="button" class="btn btn-success" id="btn-register">Cadastrar Pedido</button>
+      </ul>
+
+      <ul class="navbar-nav" style="margin-right: 2%;">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Consultar Pessoa <span class="sr-only">(current)</span></a>
+        </li>
+      </ul>
+
+      <form class="form-inline mt-2 mt-md-0">
+        <input class="form-control mr-sm-2" type="text" placeholder="Digite um CPF..." aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Pesquisar</button>
+      </form>
+    </div>
+
+  </nav>
+
+  <div class="content">
+
+    <table class="table table-hover table-dark">
+      <thead>
+        <tr>
+          <th scope="col">CPF</th>
+          <th scope="col">Nome</th>
+          <th scope="col">Produto</th>
+          <th scope="col">Valor</th>
+          <th scope="col">Data da Compra</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>109.368.689-88</td>
+          <td>Vítor Hugo</td>
+          <td>Fogão</td>
+          <td>R$300,00</td>
+          <td>18/08/2023</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/popper.min.js"></script>
+  <script src="https://getbootstrap.com/docs/4.0/dist/js/bootstrap.min.js"></script>
+</body>
+
+</html>

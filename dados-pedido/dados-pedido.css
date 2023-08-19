@@ -1,0 +1,22 @@
+.table {
+    width: 70%;
+  }
+
+  .content {
+    display: flex;
+    justify-content: center;
+    margin-top: 2%;
+  }
+
+  thead {
+    background-color: #007146
+  }
+
+  #btn-register {
+    background-color: #007146;
+    border: none;
+  }
+
+  #btn-register:hover {
+    background-color: #088d58;
+  }

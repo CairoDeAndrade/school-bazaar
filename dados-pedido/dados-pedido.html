@@ -7,11 +7,44 @@
   <!-- Bootstrap -->
   <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://getbootstrap.com/docs/4.0/examples/navbar-fixed/navbar-top-fixed.css" rel="stylesheet">
+  <!-- jquery -->
+  <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
   <!-- css -->
   <link rel="stylesheet" href="dados-pedido.css">
+  <script src="script.js"></script>
 </head>
 
 <body>
+  <div class='modal fade' id='register' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' data-backdrop='static'>
+    <div class='modal-dialog' role='document'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h4 class='modal-title text-center'>Cadastrar Pedido</h4>
+                <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>×</span></button>
+            </div>
+            <div class='modal-body'>
+                <form class='form-horizontal' method='POST' action='register.php'>
+                    <div class='form-group'>
+                        <label for='inputEmail3' class='col-sm-2 control-label'>CPF</label>
+                        <div class='col-sm-10'>
+                            <input type='text' name='cpf' id='cpf'>
+                        </div>
+                    </div>
+                    <div class='form-group'>
+                      <label for='inputEmail3' class='col-sm-2 control-label'>Valor</label>
+                      <div class='col-sm-10'>
+                          <input type='text' name='value' id='value'>
+                      </div>
+                    </div>
+                </div>
+                    <div class="modal-footer">
+                    <button type="submit" class="btn btn-success" name="btnRegister">Cadastrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
 
     <a class="navbar-brand" href="#">Bazar Receita</a>
@@ -22,13 +55,7 @@
 
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav mr-auto">
-        <button type="button" class="btn btn-success" id="btn-register">Cadastrar Pedido</button>
-      </ul>
-
-      <ul class="navbar-nav" style="margin-right: 2%;">
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Consultar Pessoa <span class="sr-only">(current)</span></a>
-        </li>
+        <button type="button" class="btn btn-success" id="btn-register" onclick="showModalRegister()">Cadastrar Pedido</button>
       </ul>
 
       <form class="form-inline mt-2 mt-md-0">
@@ -45,8 +72,6 @@
       <thead>
         <tr>
           <th scope="col">CPF</th>
-          <th scope="col">Nome</th>
-          <th scope="col">Produto</th>
           <th scope="col">Valor</th>
           <th scope="col">Data da Compra</th>
         </tr>
@@ -55,8 +80,6 @@
       <tbody>
         <tr>
           <td>109.368.689-88</td>
-          <td>Vítor Hugo</td>
-          <td>Fogão</td>
           <td>R$300,00</td>
           <td>18/08/2023</td>
         </tr>

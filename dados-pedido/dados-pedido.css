@@ -20,3 +20,11 @@
   #btn-register:hover {
     background-color: #088d58;
   }
+
+  #editSvg {
+    cursor: pointer;
+  }
+
+  .btn-success {
+    background-color: #007146;
+  }

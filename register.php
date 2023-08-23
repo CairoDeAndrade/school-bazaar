@@ -1,7 +1,9 @@
 <?php 
-
+    session_start();
+    
     class registerOrder{
 
+        
         public $cpf;
         public $value;
 
@@ -11,8 +13,6 @@
             $conn = new Conn;
             $connect = $conn->connDB();
 
-            $this->cpf = $_POST['cpf'];
-            $this->value = $_POST['value'];
 
             $sql = mysqli_query($connect, "INSERT INTO bazar.order (cpf, value) 
             VALUES ('$this->cpf' , '$this->value')");
@@ -23,8 +23,29 @@
             }
             
         }
+
+        function validadeDuplicity(){
+            
+            $this->cpf = $_POST['cpf'];
+            $this->value = $_POST['value'];
+            
+            include_once('conn.php');
+            $conn = new Conn;
+            $connect = $conn->connDB();
+
+            $sql = mysqli_query($connect, "SELECT cpf FROM bazar.order WHERE cpf = '$this->cpf' ");
+
+            if(mysqli_num_rows($sql) === 1){
+                $_SESSION['register'] = "Duplicity";
+                header('Location: index.php');
+                die();
+            } else {
+                $this->register();
+                header('Location: index.php');
+            }      
+        }
     }
 
     $registerOrder = new registerOrder;
-    $registerOrder->register();
+    $registerOrder->validadeDuplicity();
 ?>

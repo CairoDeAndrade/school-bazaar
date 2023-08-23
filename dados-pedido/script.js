@@ -14,3 +14,15 @@ function showModal(modalId, id) {
         })
     }
 }
+
+function showModalInformation(title, message){
+    $(document).ready(function() {
+        $('#title-modal').text(title);
+        $('#text-modal').text(message);
+
+        $('#modal-information').modal('show');
+        setTimeout(function() {
+            $('#modal-information').modal('hide');
+        }, 3000);
+    });
+}

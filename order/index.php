@@ -9,11 +9,11 @@
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://getbootstrap.com/docs/4.0/examples/navbar-fixed/navbar-top-fixed.css" rel="stylesheet">
     <!-- jquery -->
-    <script src="https://code.jquery.com/jquery-3.7.0.js"
-        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
     <!-- css -->
-    <link rel="stylesheet" href="./dados-pedido/dados-pedido.css">
-    <script src="./dados-pedido/script.js"></script>
+    <link rel="stylesheet" href="../dados-pedido/dados-pedido.css">
+    <script src="http://26.155.119.91/school-bazaar/school-bazaar/dados-pedido/script.js"></script>
 </head>
 
 <body>
@@ -44,6 +44,30 @@
             <?php
           }
           unset($_SESSION['register']);
+      }
+      if(isset($_SESSION['edit'])){
+            if($_SESSION['edit'] === true){
+                ?>
+                    <script>
+                        showModalInformation("Editado!" , "A compra foi editada com sucesso!");
+                    </script>
+                <?php
+            } 
+            if($_SESSION['edit'] === false){
+                ?>
+                    <script>
+                        showModalInformation("Erro!" , "Erro ao editar, tente novamente ou entre em contato com o administrador!");
+                    </script>
+                <?php
+            }
+            if($_SESSION['edit'] === 'Valor Acima'){
+                ?>
+                    <script>
+                        showModalInformation("Atenção!" , "O valor ultrapassou o limite de R$1000!");
+                    </script>
+                <?php
+            }
+            unset($_SESSION['edit']);
       }
   ?>
 
@@ -78,7 +102,7 @@
                 </div>
                 <div class='modal-body'>
                     <form class='form-horizontal' method='POST'
-                        action='http://localhost/school-bazaar/school-bazaar/register.php'>
+                        action='http://26.155.119.91/school-bazaar/school-bazaar/order/register.php'>
                         <div class='form-group'>
                             <label for='inputEmail3' class='col-sm-2 control-label'>CPF</label>
                             <div class='col-sm-10'>
@@ -106,22 +130,22 @@
         <div class='modal-dialog' role='document'>
             <div class='modal-content'>
                 <div class='modal-header'>
-                    <h4 class='modal-title text-center'>Editar Pedido</h4>
+                    <h4 class='modal-title text-center'>Editar Compra</h4>
                     <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span
                             aria-hidden='true'>×</span></button>
                 </div>
                 <div class='modal-body'>
-                    <form class='form-horizontal' method='POST' action='editModal.php'>
+                    <form class='form-horizontal' method='POST' action='http://26.155.119.91/school-bazaar/school-bazaar/order/update.php'>
                         <div class='form-group'>
                             <label for='inputEmail3' class='col-sm-2 control-label'>CPF</label>
                             <div class='col-sm-10'>
-                                <input type='text' name='cpf' id='cpf'>
+                                <input type='text' name='cpf-edit' id='cpf-edit' readonly>
                             </div>
                         </div>
                         <div class='form-group'>
                             <label for='inputEmail3' class='col-sm-2 control-label'>Valor</label>
                             <div class='col-sm-10'>
-                                <input type='text' name='value' id='value'>
+                                <input type='number' name='value-edit' id='value-edit' maxlength="15" required>
                             </div>
                         </div>
                 </div>
@@ -170,7 +194,7 @@
 
             <tbody>
                 <?php
-            include_once('conn.php');
+            include_once('../conn.php');
             $conn = new Conn;
             $connect = $conn->connDB();
 
@@ -200,15 +224,8 @@
         </table>
 
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
-    </script>
     <script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/popper.min.js"></script>
     <script src="https://getbootstrap.com/docs/4.0/dist/js/bootstrap.min.js"></script>
 </body>
 
 </html>
-<?php
-
-?>

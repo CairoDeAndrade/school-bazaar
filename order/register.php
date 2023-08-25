@@ -9,7 +9,7 @@
 
         function register(){
 
-            include_once('conn.php');
+            include_once('../conn.php');
             $conn = new Conn;
             $connect = $conn->connDB();
 
@@ -29,7 +29,7 @@
             $this->cpf = $_POST['cpf'];
             $this->value = $_POST['value'];
             
-            include_once('conn.php');
+            include_once('../conn.php');
             $conn = new Conn;
             $connect = $conn->connDB();
 

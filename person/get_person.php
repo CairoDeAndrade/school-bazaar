@@ -1,10 +1,10 @@
 <?php
 
-class Order {
+class Person {
     public $id;
 
     function getOrderById($id) {
-        include_once("conn.php");
+        include_once('../conn.php');
         $conn = new Conn();
         $connect = $conn->connDB();
 
@@ -12,8 +12,8 @@ class Order {
         $result = mysqli_fetch_array($sql);
 
         $array = array(
-            'cpf' => $result['cpf'],
-            'value' => $result['value']
+            'id' => $id,
+            'cpf' => $result['cpf']
         );
 
         $json = json_encode($array);

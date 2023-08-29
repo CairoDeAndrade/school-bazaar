@@ -69,6 +69,15 @@
             }
             unset($_SESSION['edit']);
       }
+
+      if(isset($_SESSION['error-search'])){
+        ?>
+                    <script>
+                        showModalInformation("Atenção!" , "O CPF digitado não existe!");
+                    </script>
+        <?php
+            unset($_SESSION['error-search']);
+      }
   ?>
 
     <!-- Register modal -->
@@ -102,7 +111,7 @@
                 </div>
                 <div class='modal-body'>
                     <form class='form-horizontal' method='POST'
-                        action='http://26.155.119.91/school-bazaar/school-bazaar/order/register.php'>
+                        action='http://localhost/school-bazaar/school-bazaar/order/register.php'>
                         <div class='form-group'>
                             <label for='inputEmail3' class='col-sm-2 control-label'>CPF</label>
                             <div class='col-sm-10'>
@@ -135,7 +144,7 @@
                             aria-hidden='true'>×</span></button>
                 </div>
                 <div class='modal-body'>
-                    <form class='form-horizontal' method='POST' action='http://26.155.119.91/school-bazaar/school-bazaar/order/update.php'>
+                    <form class='form-horizontal' method='POST' action='http://localhost/school-bazaar/school-bazaar/order/update.php'>
                         <div class='form-group'>
                             <label for='inputEmail3' class='col-sm-2 control-label'>CPF</label>
                             <div class='col-sm-10'>
@@ -168,12 +177,12 @@
 
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
-                <button type="button" class="btn btn-success" id="btn-register"
-                    onclick="showModal('#register')">Cadastrar Pedido</button>
+                <button type="button" class="btn btn-light" id="btn-sync" onclick="refresh()">Sincronizar</button>
+                <button style='display: none;' type="button" class="btn btn-light" id="btn-refresh" onclick="refresh()">Limpar Busca</button>
             </ul>
 
-            <form class="form-inline mt-2 mt-md-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Digite um CPF..." aria-label="Search">
+            <form class="form-inline mt-2 mt-md-0" METHOD='GET' action='get_order.php'>
+                <input class="form-control mr-sm-2" type="text" name='cpf-search' placeholder="Digite um CPF..." aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Pesquisar</button>
             </form>
         </div>
@@ -187,38 +196,123 @@
                 <tr>
                     <th scope="col">CPF</th>
                     <th scope="col">Valor</th>
-                    <th scope="col">Data da Compra</th>
+                    <th scope="col">Data da Última Compra</th>
                     <th scope="col">Editar</th>
                 </tr>
             </thead>
 
             <tbody>
                 <?php
-            include_once('../conn.php');
-            $conn = new Conn;
-            $connect = $conn->connDB();
 
-            $sql = mysqli_query($connect, "SELECT * FROM bazar.order");
-            
-            while($result = mysqli_fetch_array($sql)){
-                ?>
-                <tr>
-                    <td><?php echo $result['cpf']?></td>
-                    <td><?php echo "R$" .$result['value']?></td>
-                    <td><?php echo date('d/m/Y H:i:s' , strtotime($result['date_inserted']))?></td>
-                    <td id="editSvg" value="<?php echo $result['id_order']?>"
-                        onclick="showModal('#editModal' , '<?php echo $result['id_order'] ?>')"><svg
-                            xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                            class="bi bi-pencil-square" viewBox="0 0 16 16">
-                            <path
-                                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                            <path fill-rule="evenodd"
-                                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-                        </svg>
-                    </td>
-                </tr>
-                <?php
-            }
+                if(isset($_SESSION['json'])){ 
+                    ?>
+                        <script>
+                            var element1 = document.getElementById('btn-refresh');
+                            var element2 = document.getElementById('btn-sync');
+                            element1.style.display = 'block';
+                            element2.style.display = 'none';
+                        </script>
+                    <?php
+                    $result = json_decode($_SESSION['json'], true);
+                    
+                    
+                    if(array_key_first($result) === 'id_order'){
+                        ?>
+                                <tr>
+                                    <td><?php echo $result['cpf']?></td>
+                                    <td><?php echo "R$" .$result['value']?></td>
+                                    <?php
+                                        if($result['value'] === "0"){
+                                            ?>
+                                                <td>Sem Compra</td>
+                                            <?php
+                                        } else {
+                                            ?>
+                                                <td><?php echo date('d/m/Y H:i:s' , strtotime($result['date_inserted']))?></td>
+                                            <?php     
+                                        }
+                                    ?>
+                                    <td id="editSvg" value="<?php echo $result['id_order']?>"
+                                        onclick="showModal('#editModal' , '<?php echo $result['id_order'] ?>')"><svg
+                                            xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                            class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                            <path
+                                                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                            <path fill-rule="evenodd"
+                                                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                        </svg>
+                                    </td>
+                                </tr>
+                        <?php
+                    } else {
+                        foreach($result as $key){
+                        ?>
+                            <tr>
+                                <td><?php echo $key['cpf']?></td>
+                                <td><?php echo "R$" .$key['value']?></td>
+                                <?php
+                                    if($key['value'] === "0"){
+                                        ?>
+                                            <td>Sem Compra</td>
+                                        <?php
+                                    } else {
+                                        ?>
+                                            <td><?php echo date('d/m/Y H:i:s' , strtotime($key['date_inserted']))?></td>
+                                        <?php     
+                                    }
+                                ?>
+                                <td id="editSvg" value="<?php echo $key['id_order']?>"
+                                    onclick="showModal('#editModal' , '<?php echo $key['id_order'] ?>')"><svg
+                                        xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                        class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                        <path
+                                            d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                        <path fill-rule="evenodd"
+                                            d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                    </svg>
+                                </td>
+                            </tr>
+                        <?php
+                        }
+                    }
+                    unset($_SESSION['json']);
+                } else {
+                    include_once('../conn.php');
+                    $conn = new Conn;
+                    $connect = $conn->connDB();
+
+                    $sql = mysqli_query($connect, "SELECT * FROM bazar.order ORDER BY date_inserted DESC");
+                    
+                    while($result = mysqli_fetch_array($sql)){
+                        ?>
+                        <tr>
+                            <td><?php echo $result['cpf']?></td>
+                            <td><?php echo "R$" .$result['value']?></td>
+                            <?php
+                                if($result['value'] === "0"){
+                                    ?>
+                                        <td>Sem Compra</td>
+                                    <?php
+                                } else {
+                                    ?>
+                                        <td><?php echo date('d/m/Y H:i:s' , strtotime($result['date_inserted']))?></td>
+                                    <?php     
+                                }
+                            ?>
+                            <td id="editSvg" value="<?php echo $result['id_order']?>"
+                                onclick="showModal('#editModal' , '<?php echo $result['id_order'] ?>')"><svg
+                                    xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                    class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                    <path
+                                        d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                    <path fill-rule="evenodd"
+                                        d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                </svg>
+                            </td>
+                        </tr>
+                        <?php
+                        }
+                }
         ?>
             </tbody>
         </table>

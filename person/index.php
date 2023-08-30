@@ -45,29 +45,38 @@
           }
           unset($_SESSION['registerPerson']);
       }
-      if(isset($_SESSION['edit'])){
-            if($_SESSION['edit'] === true){
+      if(isset($_SESSION['edit-person'])){
+            if($_SESSION['edit-person'] === true){
                 ?>
                     <script>
-                        showModalInformation("Editado!" , "A compra foi editada com sucesso!");
+                        showModalInformation("Editado!" , "O CPF foi editado com sucesso!");
                     </script>
                 <?php
             } 
-            if($_SESSION['edit'] === false){
+            if($_SESSION['edit-person'] === false){
                 ?>
                     <script>
                         showModalInformation("Erro!" , "Erro ao editar, tente novamente ou entre em contato com o administrador!");
                     </script>
                 <?php
             }
-            if($_SESSION['edit'] === 'Valor Acima'){
+            if($_SESSION['edit-person'] === 'Duplicity'){
                 ?>
                     <script>
-                        showModalInformation("Atenção!" , "O valor ultrapassou o limite de R$1000!");
+                        showModalInformation("Atenção!" , "Já existe um CPF cadastrado com o valor do CPF digitado!");
                     </script>
                 <?php
             }
-            unset($_SESSION['edit']);
+            unset($_SESSION['edit-person']);
+      }
+
+      if(isset($_SESSION['error-search-cpf'])){
+        ?>
+            <script>
+                 showModalInformation("Atenção!" , "Não existe CPF para o valor buscado!");
+            </script>
+        <?php
+        unset($_SESSION['error-search-cpf']);
       }
   ?>
 
@@ -104,7 +113,7 @@
                 </div>
                 <div class='modal-body'>
                     <form class='form-horizontal' method='POST'
-                        action='http://localhost/school-bazaar/school-bazaar/person/register.php'>
+                        action='http://26.155.119.91/school-bazaar/school-bazaar/person/register.php'>
                         <div class='form-group'>
                             <label for='inputEmail3' class='col-sm-2 control-label'>CPF</label>
                             <div class='col-sm-10'>
@@ -121,7 +130,7 @@
     </div>
 
     <!-- Edit moodal -->
-    <div class='modal fade' id='editModal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel'
+    <div class='modal fade' id='edit-modal-cpf' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel'
         data-backdrop='static'>
         <div class='modal-dialog' role='document'>
             <div class='modal-content'>
@@ -131,11 +140,12 @@
                             aria-hidden='true'>×</span></button>
                 </div>
                 <div class='modal-body'>
-                    <form class='form-horizontal' method='POST' action='http://localhost/school-bazaar/school-bazaar/person/update.php'>
+                    <form class='form-horizontal' method='POST' action='http://26.155.119.91/school-bazaar/school-bazaar/person/update.php'>
                         <div class='form-group'>
                             <label for='inputEmail3' class='col-sm-2 control-label'>CPF</label>
                             <div class='col-sm-10'>
-                                <input type='text' name='cpf-edit-person' id='cpf-edit' readonly>
+                                <input type='number' name='id-edit' style='display: none;' id='id-edit'>
+                                <input type='text' name='cpf-edit-person' id='cpf-edit'>
                             </div>
                         </div>
                 </div>
@@ -160,10 +170,12 @@
             <ul class="navbar-nav mr-auto">
                 <button type="button" class="btn btn-success" id="btn-register"
                     onclick="showModal('#register-person')">Cadastrar Pessoa</button>
+                    &nbsp;
+                    <button style='display: none;' type="button" class="btn btn-light" id="btn-refresh" onclick="refresh()">Limpar Busca</button>
             </ul>
-
-            <form class="form-inline mt-2 mt-md-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Digite um CPF..." aria-label="Search">
+            
+            <form class="form-inline mt-2 mt-md-0" METHOD='GET' action='get_person.php'>
+                <input class="form-control mr-sm-2" type="text" name='cpf-person-search' placeholder="Digite um CPF..." aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Pesquisar</button>
             </form>
         </div>
@@ -182,29 +194,78 @@
 
             <tbody>
                 <?php
-            include_once('../conn.php');
-            $conn = new Conn;
-            $connect = $conn->connDB();
+                if(isset($_SESSION['json-person'])){ 
+                    ?>
+                        <script>
+                            var element1 = document.getElementById('btn-refresh');
+                            element1.style.display = 'block';
+                          
+                        </script>
+                    <?php
+                    $result = json_decode($_SESSION['json-person'], true);
+                    
+                    
+                    if(array_key_first($result) === 'id_order'){
+                        ?>
+                                <tr>
+                                    <td><?php echo $result['cpf']?></td>
+                                    <td id="editSvg" value="<?php echo $result['id_order']?>"
+                                        onclick="showModal('#editModal' , '<?php echo $result['id_order'] ?>')"><svg
+                                            xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                            class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                            <path
+                                                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                            <path fill-rule="evenodd"
+                                                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                        </svg>
+                                    </td>
+                                </tr>
+                        <?php
+                    } else {
+                        foreach($result as $key){
+                        ?>
+                            <tr>
+                                <td><?php echo $key['cpf']?></td>
+                                <td id="editSvg" value="<?php echo $key['id_order']?>"
+                                    onclick="showModal('#editModal' , '<?php echo $key['id_order'] ?>')"><svg
+                                        xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                        class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                        <path
+                                            d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                        <path fill-rule="evenodd"
+                                            d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                    </svg>
+                                </td>
+                            </tr>
+                        <?php
+                        }
+                    }
+                    unset($_SESSION['json-person']);
+                } else {
+                    include_once('../conn.php');
+                    $conn = new Conn;
+                    $connect = $conn->connDB();
 
-            $sql = mysqli_query($connect, "SELECT * FROM bazar.order");
-            
-            while($result = mysqli_fetch_array($sql)){
-                ?>
-                <tr>
-                    <td><?php echo $result['cpf']?></td>    
-                    <td id="editSvg" value="<?php echo $result['id_order']?>"
-                        onclick="showModal('#editModal' , '<?php echo $result['id_order'] ?>')"><svg
-                            xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                            class="bi bi-pencil-square" viewBox="0 0 16 16">
-                            <path
-                                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                            <path fill-rule="evenodd"
-                                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-                        </svg>
-                    </td>
-                </tr>
-                <?php
-            }
+                    $sql = mysqli_query($connect, "SELECT * FROM bazar.order ORDER BY cpf ASC");
+                    
+                    while($result = mysqli_fetch_array($sql)){
+                        ?>
+                        <tr>
+                            <td><?php echo $result['cpf']?></td>    
+                            <td id="editSvg" value="<?php echo $result['id_order']?>"
+                                onclick="showModal('#edit-modal-cpf' , '<?php echo $result['id_order'] ?>')"><svg
+                                    xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                    class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                    <path
+                                        d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                    <path fill-rule="evenodd"
+                                        d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                </svg>
+                            </td>
+                        </tr>
+                        <?php
+                    }
+                }
         ?>
             </tbody>
         </table>

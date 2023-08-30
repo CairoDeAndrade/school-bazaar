@@ -4,18 +4,29 @@ function showModal(modalId, id) {
         if(id > 0){
             $.ajax({
                 type: "GET",
-                url: "http://localhost/school-bazaar/school-bazaar/order/get_order.php", 
+                url: "http://26.155.119.91/school-bazaar/school-bazaar/order/get_order.php", 
                 data: { id: id },
                 success: function(response) {
                     var jsonResponse = JSON.parse(response);
 
                     $("#cpf-edit").val(jsonResponse.cpf);
                     $("#value-edit").val(jsonResponse.value);
+
+                    if(modalId == '#edit-modal-cpf'){
+                        $('#id-edit').val(id);
+                    }
+
                     $(modalId).modal('show');
+                    
                     
                 }
             });
         } else {
+            
+            if(modalId == '#edit-modal-cpf'){
+                $('#id-edit').val(id);
+            }
+
             $(modalId).modal('show');
         }
 

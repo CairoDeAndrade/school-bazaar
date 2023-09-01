@@ -4,7 +4,7 @@ function showModal(modalId, id) {
         if(id > 0){
             $.ajax({
                 type: "GET",
-                url: "http://26.155.119.91/school-bazaar/school-bazaar/order/get_order.php", 
+                url: "http://26.88.70.231/school-bazaar/school-bazaar/order/get_order.php", 
                 data: { id: id },
                 success: function(response) {
                     var jsonResponse = JSON.parse(response);

@@ -113,7 +113,7 @@
                 </div>
                 <div class='modal-body'>
                     <form class='form-horizontal' method='POST'
-                        action='http://26.155.119.91/school-bazaar/school-bazaar/person/register.php'>
+                        action='http://26.88.70.231/school-bazaar/school-bazaar/person/register.php'>
                         <div class='form-group'>
                             <label for='inputEmail3' class='col-sm-2 control-label'>CPF</label>
                             <div class='col-sm-10'>
@@ -140,7 +140,7 @@
                             aria-hidden='true'>×</span></button>
                 </div>
                 <div class='modal-body'>
-                    <form class='form-horizontal' method='POST' action='http://26.155.119.91/school-bazaar/school-bazaar/person/update.php'>
+                    <form class='form-horizontal' method='POST' action='http://26.88.70.231/school-bazaar/school-bazaar/person/update.php'>
                         <div class='form-group'>
                             <label for='inputEmail3' class='col-sm-2 control-label'>CPF</label>
                             <div class='col-sm-10'>
